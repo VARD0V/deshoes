@@ -22,7 +22,7 @@ class AuthController extends Controller
         if ($user && $credentials['password'] === $user->password) {
             Auth::login($user);
             $request->session()->regenerate();
-            return redirect('/welcome');
+            return redirect('/products');
         }
         return back()->withErrors([
             'email' => 'Неверные учетные данные.',
