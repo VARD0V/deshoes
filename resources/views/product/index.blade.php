@@ -38,15 +38,6 @@
                             <option value="amount_desc" {{ request('sort') == 'amount_desc' ? 'selected' : '' }}>Количество ↓</option>
                         </select>
                     </div>
-
-                    {{-- Сброс --}}
-                    @if(request('search') || request('supplier_id') || request('sort'))
-                        <div>
-                            <a href="{{ route('products.index') }}" style="padding: 8px 16px; background: #6c757d; color: white; text-decoration: none;">
-                                Сброс
-                            </a>
-                        </div>
-                    @endif
                 </div>
             </form>
         @endif
