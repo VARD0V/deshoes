@@ -35,9 +35,11 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        // Загружаем продукт со всеми связанными данными
+        $product = Product::with(['typeProduct', 'genderShoe', 'manufacturer', 'supplier', 'unit'])->find($id);
+        return view('product.show', compact('product'));
     }
 
     /**

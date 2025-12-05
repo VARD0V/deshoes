@@ -1,10 +1,9 @@
 @extends('layouts.layout')
-@section('title', 'Каталог обуви')
+@section('title', $product->description)
 @section('content')
-    <h1>Каталог обуви</h1>
+    <h1>{{ $product->description }}</h1>
+
     <div class="container">
-        @foreach($products as $product)
-            <a href="{{ route('products.show', $product->id) }}">
                 <div class="card">
                     <div>
                         @if($product->photo && file_exists(public_path('/assets/images/' . $product->photo)))
@@ -26,7 +25,6 @@
                         <p>{{ $product->discount }} %</p>
                     </div>
                 </div>
-            </a>
-        @endforeach
     </div>
+    <a href="{{ route('products.index') }}">Назад к каталогу</a>
 @endsection

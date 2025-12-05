@@ -22,7 +22,7 @@
         @else
             <a href="{{ route('login') }}">Войти</a>
         @endauth
-            <a href="{{ route('products') }}">Товары</a>
+            <a href="{{ route('products.index') }}">Товары</a>
     </nav>
 </header>
 <main>

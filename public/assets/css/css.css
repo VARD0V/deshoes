@@ -2,10 +2,15 @@ p{
     margin: 0;
     padding: 0;
 }
+a{
+    text-decoration: none;
+    color: black;
+}
 .container{
     display: flex;
     flex-direction: column;
     gap: 30px;
+    align-items: center;
 }
 .card{
     display: flex;
