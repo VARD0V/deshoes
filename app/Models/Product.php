@@ -8,53 +8,48 @@ use Illuminate\Notifications\Notifiable;
 
 class Product extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'articul',
-        'type_product',
-        'unit',
+        'type_product_id',
+        'unit_id',
         'price',
-        'supplier',
-        'manufacturer',
-        'type_gender_shoes',
+        'supplier_id',
+        'manufacturer_id',
+        'gender_shoe_id',
         'discount',
         'amount',
         'description',
         'photo'
     ];
 
-    // Связи
     public function typeProduct()
     {
-        return $this->belongsTo(TypeProduct::class, 'type_product');
+        return $this->belongsTo(TypeProduct::class);
     }
 
     public function unit()
     {
-        return $this->belongsTo(Unit::class, 'unit');
+        return $this->belongsTo(Unit::class);
     }
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class, 'supplier');
+        return $this->belongsTo(Supplier::class);
     }
 
     public function manufacturer()
     {
-        return $this->belongsTo(Manufacturer::class, 'manufacturer');
+        return $this->belongsTo(Manufacturer::class);
     }
 
     public function genderShoe()
     {
-        return $this->belongsTo(GenderShoe::class, 'type_gender_shoes');
+        return $this->belongsTo(GenderShoe::class);
     }
-
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
-
     // Аксессоры
     public function getFinalPriceAttribute()
     {
