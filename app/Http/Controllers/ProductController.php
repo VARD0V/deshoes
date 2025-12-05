@@ -10,10 +10,40 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['typeProduct', 'genderShoe', 'manufacturer', 'supplier', 'unit'])->get();
-        return view('product.index', compact('products'));
+        $search = $request->get('search', '');
+
+        $query = Product::with(['typeProduct', 'genderShoe', 'manufacturer', 'supplier', 'unit']);
+
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('articul', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orWhere('price', 'LIKE', "%{$search}%")
+                    ->orWhere('discount', 'LIKE', "%{$search}%")
+                    ->orWhere('amount', 'LIKE', "%{$search}%")
+                    ->orWhereHas('typeProduct', function($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('manufacturer', function($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('supplier', function($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('unit', function($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('genderShoe', function($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
+        $products = $query->get();
+
+        return view('product.index', compact('products', 'search'));
     }
 
     /**
