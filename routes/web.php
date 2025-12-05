@@ -10,4 +10,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::resource('/products', ProductController::class);
 
-
+Route::middleware('auth')->group(function () {
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+});

@@ -19,6 +19,9 @@
                 @csrf
                 <button type="submit">Выйти</button>
             </form>
+            <div class="user-name">
+                {{ auth()->user()->fio }}
+            </div>
         @else
             <a href="{{ route('login') }}">Войти</a>
         @endauth

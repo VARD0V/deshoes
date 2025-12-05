@@ -6,6 +6,10 @@ a{
     text-decoration: none;
     color: black;
 }
+nav{
+    display: flex;
+    justify-content: end;
+}
 .container{
     display: flex;
     flex-direction: column;
