@@ -13,9 +13,12 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search', '');
+        $sort = $request->get('sort', '');
+        $supplier_id = $request->get('supplier_id', '');
 
         $query = Product::with(['typeProduct', 'genderShoe', 'manufacturer', 'supplier', 'unit']);
 
+        // Поиск
         if (!empty($search)) {
             $query->where(function($q) use ($search) {
                 $q->where('articul', 'LIKE', "%{$search}%")
@@ -41,9 +44,24 @@ class ProductController extends Controller
             });
         }
 
+        // Фильтр по поставщику
+        if (!empty($supplier_id)) {
+            $query->where('supplier_id', $supplier_id);
+        }
+
+        // Сортировка
+        if ($sort === 'amount_asc') {
+            $query->orderBy('amount', 'asc');
+        } elseif ($sort === 'amount_desc') {
+            $query->orderBy('amount', 'desc');
+        }
+
         $products = $query->get();
 
-        return view('product.index', compact('products', 'search'));
+        // Получаем всех поставщиков для фильтра
+        $suppliers = \App\Models\Supplier::all();
+
+        return view('product.index', compact('products', 'search', 'sort', 'supplier_id', 'suppliers'));
     }
 
     /**

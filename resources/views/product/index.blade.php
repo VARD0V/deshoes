@@ -3,21 +3,56 @@
 @section('content')
     <h1>Каталог обуви</h1>
 
-    {{-- Поиск только для админа и менеджера --}}
     @auth
         @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-            <form method="GET" action="{{ route('products.index') }}" id="searchForm">
-                <input type="text"
-                       name="search"
-                       id="searchInput"
-                       placeholder="Поиск товаров..."
-                       value="{{ request('search', '') }}"
-                       autocomplete="off"
-                       oninput="this.form.submit()">
+            <form method="GET" action="{{ route('products.index') }}" id="filterForm" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                    {{-- Поиск --}}
+                    <div>
+                        <input type="text"
+                               name="search"
+                               id="searchInput"
+                               placeholder="Поиск..."
+                               value="{{ request('search', '') }}"
+                               autocomplete="off"
+                               style="padding: 8px;">
+                    </div>
+
+                    {{-- Фильтр по поставщику --}}
+                    <div>
+                        <select name="supplier_id" onchange="this.form.submit()" style="padding: 8px;">
+                            <option value="">Все поставщики</option>
+                            @foreach($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                    {{ $supplier->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Сортировка --}}
+                    <div>
+                        <select name="sort" onchange="this.form.submit()" style="padding: 8px;">
+                            <option value="">Без сортировки</option>
+                            <option value="amount_asc" {{ request('sort') == 'amount_asc' ? 'selected' : '' }}>Количество ↑</option>
+                            <option value="amount_desc" {{ request('sort') == 'amount_desc' ? 'selected' : '' }}>Количество ↓</option>
+                        </select>
+                    </div>
+
+                    {{-- Сброс --}}
+                    @if(request('search') || request('supplier_id') || request('sort'))
+                        <div>
+                            <a href="{{ route('products.index') }}" style="padding: 8px 16px; background: #6c757d; color: white; text-decoration: none;">
+                                Сброс
+                            </a>
+                        </div>
+                    @endif
+                </div>
             </form>
         @endif
     @endauth
 
+    {{-- Остальной код с товарами без изменений --}}
     <div class="container">
         @foreach($products as $product)
             @php
@@ -76,21 +111,16 @@
     </div>
 
     <script>
-        // Простой JavaScript для авто-отправки формы
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
-            const searchForm = document.getElementById('searchForm');
+            const filterForm = document.getElementById('filterForm');
 
-            if (searchInput && searchForm) {
+            if (searchInput && filterForm) {
                 let searchTimeout;
-
                 searchInput.addEventListener('input', function() {
                     clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(function() {
-                        searchForm.submit();
-                    }, 700);
+                    searchTimeout = setTimeout(() => filterForm.submit(), 700);
                 });
-
                 searchInput.focus();
             }
         });
