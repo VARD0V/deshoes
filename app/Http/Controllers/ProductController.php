@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GenderShoe;
+use App\Models\Manufacturer;
 use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\TypeProduct;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -59,7 +64,7 @@ class ProductController extends Controller
         $products = $query->get();
 
         // Получаем всех поставщиков для фильтра
-        $suppliers = \App\Models\Supplier::all();
+        $suppliers = Supplier::all();
 
         return view('product.index', compact('products', 'search', 'sort', 'supplier_id', 'suppliers'));
     }
@@ -93,17 +98,26 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        //
+        $product = Product::with(['typeProduct', 'genderShoe', 'manufacturer', 'supplier', 'unit'])
+            ->findOrFail($id);
+        // Получаем все данные для выпадающих списков
+        $typeProducts = TypeProduct::all();
+        $genderShoes = GenderShoe::all();
+        $manufacturers = Manufacturer::all();
+        $suppliers = Supplier::all();
+        $units = Unit::all();
+        return view('product.edit', compact('product', 'typeProducts', 'genderShoes', 'manufacturers', 'suppliers', 'units'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $product->update($request->all());
+        return redirect()->route('products.show', $product->id);
     }
 
     /**
@@ -111,6 +125,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('products.index');
     }
 }

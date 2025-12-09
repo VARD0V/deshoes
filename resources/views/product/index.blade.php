@@ -42,8 +42,6 @@
             </form>
         @endif
     @endauth
-
-    {{-- Остальной код с товарами без изменений --}}
     <div class="container">
         @foreach($products as $product)
             @php
@@ -94,13 +92,31 @@
                     </div>
                 </div>
             </a>
+            {{-- Кнопка удаления и редактирования только для администратора --}}
+            @auth
+                @if(auth()->user()->isAdmin())
+                    <div style="display: flex">
+                        <div>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                  onsubmit="return confirm('Вы уверены, что хотите удалить этот товар?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">
+                                    Удалить товар
+                                </button>
+                            </form>
+                        </div>
+                        <div>
+                            <a class="btn" href="{{ route('products.edit', $product->id) }}">Редактировать товар</a>
+                        </div>
+                    </div>
+                @endif
+            @endauth
         @endforeach
-
         @if($products->isEmpty())
             <p>Товары не найдены</p>
         @endif
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');

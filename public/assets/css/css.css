@@ -50,3 +50,10 @@ nav{
     align-items: center;
     justify-content: center;
 }
+.btn{
+    width: fit-content;
+    border: 1px solid;
+    padding: 2px;
+    margin: 5px;
+    background-color: lightgray;
+}
